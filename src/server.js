@@ -1,6 +1,7 @@
 // Basic Express server
 const express = require("express");
 const cors = require("cors");
+const { connectDB } = require("./db/index");
 
 const app = express();
 
@@ -14,6 +15,11 @@ app.get("/healthz", (req, res) => {
 });
 
 // Start the server
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
-});
+const startServer = async () => {
+  await connectDB();
+  app.listen(3000, () => {
+    console.log("Server running on port 3000");
+  });
+};
+
+startServer();
