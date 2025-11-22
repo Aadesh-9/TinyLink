@@ -71,6 +71,17 @@ const getAllLinks = async () => {
   return result.rows;
 };
 
+// Get stats for one code
+const getLinkByCode = async (code) => {
+  const q = `
+    SELECT id, long_url, total_clicks, last_clicked, is_deleted, created_at
+    FROM urls
+    WHERE id = $1
+  `;
+  const result = await db.query(q, [code]);
+  return result.rows[0] || null;
+};
+
 module.exports = {
   checkCodeExists,
   insertLink,
@@ -79,4 +90,5 @@ module.exports = {
   updateLastClicked,
   markAsDeleted,
   getAllLinks,
+  getLinkByCode,
 };
