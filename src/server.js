@@ -7,13 +7,7 @@ const deleteRoutes = require("./routes/delete");
 
 const app = express();
 
-app.use(
-  express.static("public", {
-    etag: false,
-    lastModified: false,
-    maxAge: 0,
-  })
-);
+app.use(express.static("public"));
 
 // Parse JSON and enable CORS
 app.use(express.json());

@@ -3,6 +3,5 @@ CREATE TABLE IF NOT EXISTS urls (
   long_url TEXT NOT NULL,
   total_clicks INTEGER DEFAULT 0,
   last_clicked TIMESTAMP,
-  is_deleted BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

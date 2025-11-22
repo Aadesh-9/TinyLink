@@ -28,8 +28,8 @@ async function loadLinks() {
 
   try {
     const allLinks = await apiGetLinks();
-    // update global state used by ui.js
-    allActiveLinks = allLinks.filter((l) => !l.is_deleted);
+
+    allActiveLinks = allLinks;
 
     loading.classList.add("hidden");
 

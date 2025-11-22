@@ -1,31 +1,30 @@
 // Queries for links table
 const db = require("./index");
 
-// Check if a short code exists
+// Check if a short code already exists AND is not deleted
 const checkCodeExists = async (code) => {
-  const q = "SELECT id, is_deleted FROM urls WHERE id = $1";
-
+  const q = `SELECT id FROM urls WHERE id = $1`;
   const result = await db.query(q, [code]);
   return result.rows.length > 0;
 };
 
 // Insert a new link
-const insertLink = async (code, long_url) => {
+const insertLink = async (id, long_url) => {
   const q = `
     INSERT INTO urls (id, long_url)
     VALUES ($1, $2)
     RETURNING id, long_url, total_clicks, last_clicked, created_at;
   `;
-  const result = await db.query(q, [code, long_url]);
+  const result = await db.query(q, [id, long_url]);
   return result.rows[0];
 };
 
 // Find a link by its code
 const findByCode = async (code) => {
   const q = `
-    SELECT id, long_url, total_clicks, last_clicked, is_deleted, created_at
+    SELECT id, long_url, total_clicks, last_clicked, created_at
     FROM urls
-    WHERE id = $1 AND is_deleted = FALSE
+    WHERE id = $1 
   `;
   const result = await db.query(q, [code]);
   return result.rows[0] || null;
@@ -51,20 +50,17 @@ const updateLastClicked = async (code) => {
   await db.query(q, [code]);
 };
 
-// Mark a link as deleted
-const markAsDeleted = async (code) => {
-  const q = `
-    UPDATE urls
-    SET is_deleted = TRUE
-    WHERE id = $1
-  `;
-  await db.query(q, [code]);
+// HARD DELETE
+const hardDelete = async (code) => {
+  const q = `DELETE FROM urls WHERE id = $1 RETURNING *`;
+  const result = await db.query(q, [code]);
+  return result.rows[0] || null;
 };
 
 // Get all links
 const getAllLinks = async () => {
   const q = `
-    SELECT id, long_url, total_clicks, last_clicked, is_deleted, created_at
+    SELECT id, long_url, total_clicks, last_clicked, created_at
     FROM urls
     ORDER BY created_at DESC
   `;
@@ -75,7 +71,7 @@ const getAllLinks = async () => {
 // Get stats for one code
 const getLinkByCode = async (code) => {
   const q = `
-    SELECT id, long_url, total_clicks, last_clicked, is_deleted, created_at
+    SELECT id, long_url, total_clicks, last_clicked, created_at
     FROM urls
     WHERE id = $1
   `;
@@ -89,7 +85,7 @@ module.exports = {
   findByCode,
   incrementClicks,
   updateLastClicked,
-  markAsDeleted,
+  hardDelete,
   getAllLinks,
   getLinkByCode,
 };

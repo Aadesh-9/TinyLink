@@ -1,11 +1,12 @@
-// Service for deleting links
-const { findByCode, markAsDeleted } = require("../db/linkQueries");
+const { findByCode, hardDelete } = require("../db/linkQueries");
 
 const processDelete = async (code) => {
   const link = await findByCode(code);
-  if (!link) return null;
+  if (!link) return null; // not found
 
-  await markAsDeleted(code);
+  const deleted = await hardDelete(code);
+  if (!deleted) return null; // deletion failed
+
   return true;
 };
 
