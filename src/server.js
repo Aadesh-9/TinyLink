@@ -20,7 +20,12 @@ app.use("/api/links", deleteRoutes);
 
 // Health check
 app.get("/healthz", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({
+    ok: true,
+    version: "1.0",
+    uptime: process.uptime(),
+    env: process.env.NODE_ENV || "development",
+  });
 });
 
 const PORT = process.env.PORT || 3000;
