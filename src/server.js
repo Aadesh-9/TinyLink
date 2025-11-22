@@ -3,6 +3,8 @@ const cors = require("cors");
 const linkRoutes = require("./routes/links");
 const migrate = require("./db/migrate");
 const redirectRoutes = require("./routes/redirects");
+const deleteRoutes = require("./routes/delete");
+
 const app = express();
 
 // Parse JSON and enable CORS
@@ -13,6 +15,8 @@ app.use(cors());
 app.use("/api/links", linkRoutes);
 
 app.use("/", redirectRoutes);
+
+app.use("/api/links", deleteRoutes);
 
 // Health check
 app.get("/healthz", (req, res) => {

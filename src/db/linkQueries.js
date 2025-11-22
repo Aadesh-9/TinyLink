@@ -60,6 +60,17 @@ const markAsDeleted = async (code) => {
   await db.query(q, [code]);
 };
 
+// Get all links
+const getAllLinks = async () => {
+  const q = `
+    SELECT id, long_url, total_clicks, last_clicked, is_deleted, created_at
+    FROM urls
+    ORDER BY created_at DESC
+  `;
+  const result = await db.query(q);
+  return result.rows;
+};
+
 module.exports = {
   checkCodeExists,
   insertLink,
@@ -67,4 +78,5 @@ module.exports = {
   incrementClicks,
   updateLastClicked,
   markAsDeleted,
+  getAllLinks,
 };
