@@ -13,8 +13,9 @@ const createLink = async (req, res) => {
     const { long_url, custom_code, customCode } = req.body;
     const finalCode = custom_code || customCode || null;
 
-    // Build base URL (fix for undefined short_url issue)
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    // Build base URL
+    const baseUrl =
+      process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
 
     // Business logic
     const result = await createShortLink(long_url, finalCode, baseUrl);
