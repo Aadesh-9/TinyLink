@@ -3,8 +3,7 @@
 document.addEventListener("DOMContentLoaded", loadStats);
 
 async function loadStats() {
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get("code");
+  const code = window.location.pathname.split("/")[2];
 
   const loading = document.getElementById("loadingText");
   const error = document.getElementById("errorText");

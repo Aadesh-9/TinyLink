@@ -44,7 +44,7 @@ function renderTable(list) {
 
 // expose functions used by HTML/onclick
 window.openStats = function (code) {
-  window.location.href = `/code.html?code=${code}`;
+  window.location.href = `/code/${code}`;
 };
 
 window.deleteLinkHandler = async function (code) {

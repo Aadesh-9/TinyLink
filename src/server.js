@@ -4,6 +4,7 @@ const linkRoutes = require("./routes/links");
 const migrate = require("./db/migrate");
 const redirectRoutes = require("./routes/redirects");
 const deleteRoutes = require("./routes/delete");
+const path = require("path");
 
 const app = express();
 
@@ -15,6 +16,19 @@ app.use(cors());
 
 app.use("/api/links", linkRoutes); // POST, GET (list), GET (details)
 app.use("/api/links", deleteRoutes); // DELETE /api/links/:code
+
+app.use("/code/js", express.static(path.join(__dirname, "..", "public", "js")));
+
+// Serve stats page at /code/:code
+app.get("/code/:code", (req, res, next) => {
+  const code = req.params.code;
+
+  // Prevent conflict with static files (like code/js/stats.js)
+  if (code === "js") return next();
+
+  res.sendFile(path.join(__dirname, "..", "public", "code.html"));
+});
+
 // Health check
 app.get("/healthz", (req, res) => {
   res.json({
