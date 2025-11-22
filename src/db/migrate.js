@@ -7,7 +7,6 @@ async function migrate() {
   const schema = fs.readFileSync(schemaPath, "utf8");
 
   await db.query(schema); // <-- FIXED (uses pool, not client)
-  console.log("Database schema synced ✔");
 }
 
 module.exports = migrate;

@@ -8,13 +8,13 @@ const deleteRoutes = require("./routes/delete");
 const app = express();
 
 // Parse JSON and enable CORS
+app.use(express.static("public"));
+
 app.use(express.json());
 app.use(cors());
 
 app.use("/api/links", linkRoutes); // POST, GET (list), GET (details)
 app.use("/api/links", deleteRoutes); // DELETE /api/links/:code
-app.use("/", redirectRoutes); // GET /:code (redirect)
-
 // Health check
 app.get("/healthz", (req, res) => {
   res.json({
@@ -24,6 +24,7 @@ app.get("/healthz", (req, res) => {
     env: process.env.NODE_ENV || "development",
   });
 });
+app.use("/", redirectRoutes); // GET /:code (redirect)
 
 const PORT = process.env.PORT || 3000;
 

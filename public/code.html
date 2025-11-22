@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>TinyLink Stats</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-900 text-white min-h-screen">
+    <div class="max-w-xl mx-auto p-6">
+      <!-- Back Button -->
+      <button
+        onclick="goBack()"
+        class="mb-4 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-white"
+      >
+        ← Back
+      </button>
+
+      <!-- Stats Card -->
+      <div
+        id="statsCard"
+        class="bg-gray-800 p-6 rounded-lg shadow space-y-4 hidden"
+      >
+        <h1 class="text-2xl font-bold" id="codeTitle"></h1>
+
+        <div>
+          <p class="text-gray-400 text-sm">Destination URL:</p>
+          <p id="longUrl" class="truncate"></p>
+        </div>
+
+        <div class="flex justify-between">
+          <div>
+            <p class="text-gray-400 text-sm">Total Clicks:</p>
+            <p id="clicks" class="text-xl"></p>
+          </div>
+
+          <div>
+            <p class="text-gray-400 text-sm">Last Clicked:</p>
+            <p id="lastClicked"></p>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-gray-400 text-sm">Created At:</p>
+          <p id="createdAt"></p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex gap-3 mt-3">
+          <button
+            id="openLinkBtn"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
+          >
+            Open Link
+          </button>
+
+          <button
+            id="copyBtn"
+            onclick="copyShortUrl()"
+            class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded"
+          >
+            Copy Short URL
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <p id="loadingText" class="text-gray-400 text-center mt-10">
+        Loading stats...
+      </p>
+
+      <!-- Error State -->
+      <p id="errorText" class="text-red-400 text-center mt-10 hidden">
+        Short link not found.
+      </p>
+    </div>
+
+    <script src="stats.js"></script>
+  </body>
+</html>

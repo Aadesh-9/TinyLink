@@ -1,79 +1,84 @@
 const API_BASE = "/api/links";
+let allActiveLinks = []; // store original list
 
-// Load all links on page load
-document.addEventListener("DOMContentLoaded", loadLinks);
+// Format timestamps (simple readable format)
+function formatTime(ts) {
+  if (!ts) return "Never";
+  const date = new Date(ts);
+  return date.toLocaleString(); // simple readable format
+}
 
-// Handle new link creation
-document.getElementById("createForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+// Search filter function
+function filterLinks(query) {
+  query = query.toLowerCase();
+  return allActiveLinks.filter(
+    (link) =>
+      link.id.toLowerCase().includes(query) ||
+      link.long_url.toLowerCase().includes(query)
+  );
+}
 
-  const submitBtn = document.getElementById("submitBtn");
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Creating...";
+document.addEventListener("DOMContentLoaded", () => {
+  loadLinks();
 
-  const long_url = document.getElementById("longUrl").value;
-  const custom_code =
-    document.getElementById("customCode").value.trim() || null;
-
-  const body = custom_code ? { long_url, custom_code } : { long_url };
-
-  const res = await fetch(API_BASE, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+  document.getElementById("searchInput").addEventListener("input", (e) => {
+    const results = filterLinks(e.target.value);
+    renderTable(results);
   });
-
-  const data = await res.json();
-  const msg = document.getElementById("formMessage");
-
-  if (!res.ok) {
-    msg.textContent = "❌ " + data.error;
-    msg.className = "text-red-400 text-sm";
-  } else {
-    msg.textContent = "✅ Created: " + data.short_url;
-    msg.className = "text-green-400 text-sm";
-    document.getElementById("createForm").reset();
-    loadLinks();
-  }
-
-  submitBtn.disabled = false;
-  submitBtn.textContent = "Shorten";
 });
 
-// Load all links
+// Load & show links
 async function loadLinks() {
-  const res = await fetch(API_BASE);
-  const links = await res.json();
-
+  const loading = document.getElementById("loadingState");
+  const tableWrapper = document.getElementById("linksTableWrapper");
   const table = document.getElementById("linksTable");
   const emptyState = document.getElementById("emptyState");
 
-  table.innerHTML = "";
+  loading.classList.remove("hidden");
+  tableWrapper.classList.add("hidden");
 
-  if (links.length === 0) {
+  const res = await fetch(API_BASE);
+  const allLinks = await res.json();
+
+  // Filter out deleted
+  allActiveLinks = allLinks.filter((l) => l.is_deleted === false);
+
+  loading.classList.add("hidden");
+
+  if (allActiveLinks.length === 0) {
     emptyState.classList.remove("hidden");
     return;
   }
 
   emptyState.classList.add("hidden");
+  tableWrapper.classList.remove("hidden");
 
-  links.forEach((link) => {
+  renderTable(allActiveLinks);
+}
+
+// Render rows (modular)
+function renderTable(list) {
+  const table = document.getElementById("linksTable");
+  table.innerHTML = "";
+
+  list.forEach((link) => {
     const row = document.createElement("tr");
     row.className = "border-b border-gray-700";
 
     row.innerHTML = `
-      <td class="p-3 text-blue-400 cursor-pointer hover:underline" onclick="openStats('${link.id}')">
-        ${link.id}
-      </td>
+      <td class="p-3 text-blue-400 cursor-pointer hover:underline"
+          onclick="openStats('${link.id}')">${link.id}</td>
 
-      <td class="p-3 truncate max-w-xs text-gray-300">
-        ${link.long_url}
-      </td>
+      <td class="p-3 truncate max-w-xs text-gray-300">${link.long_url}</td>
 
       <td class="p-3">${link.total_clicks}</td>
 
+      <td class="p-3 text-gray-400">${formatTime(link.last_clicked)}</td>
+
       <td class="p-3">
-        <button class="text-red-400 hover:text-red-500" onclick="deleteLink('${link.id}')">
+        <button class="text-red-400 hover:text-red-500" onclick="deleteLink('${
+          link.id
+        }')">
           Delete
         </button>
       </td>
@@ -89,7 +94,6 @@ async function deleteLink(code) {
   loadLinks();
 }
 
-// Open stats page
 function openStats(code) {
   window.location.href = `/code.html?code=${code}`;
 }

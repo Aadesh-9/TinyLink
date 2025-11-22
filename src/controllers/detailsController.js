@@ -12,7 +12,6 @@ const getLinkDetails = async (req, res) => {
 
     return res.json(data);
   } catch (err) {
-    console.error("Stats error:", err);
     return res.status(500).json({ error: "Server error" });
   }
 };

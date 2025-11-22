@@ -13,7 +13,6 @@ const deleteLink = async (req, res) => {
 
     return res.json({ message: "Link deleted successfully" });
   } catch (err) {
-    console.error("Delete error:", err);
     return res.status(500).json({ error: "Server error" });
   }
 };

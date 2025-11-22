@@ -12,7 +12,6 @@ const handleRedirect = async (req, res) => {
 
     return res.redirect(result.long_url);
   } catch (err) {
-    console.error("Redirect error:", err);
     return res.status(500).json({ error: "Server error" });
   }
 };

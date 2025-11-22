@@ -26,7 +26,6 @@ const createLink = async (req, res) => {
 
     return res.status(result.status).json(result.data);
   } catch (err) {
-    console.error("Error creating link:", err);
     return res.status(500).json({ error: "Server error" });
   }
 };
