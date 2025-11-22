@@ -11,12 +11,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Routes
-app.use("/api/links", linkRoutes);
-
-app.use("/", redirectRoutes);
-
-app.use("/api/links", deleteRoutes);
+app.use("/api/links", linkRoutes); // POST, GET (list), GET (details)
+app.use("/api/links", deleteRoutes); // DELETE /api/links/:code
+app.use("/", redirectRoutes); // GET /:code (redirect)
 
 // Health check
 app.get("/healthz", (req, res) => {

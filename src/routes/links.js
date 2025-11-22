@@ -8,7 +8,7 @@ const { getLinkDetails } = require("../controllers/detailsController");
 // POST /api/links
 router.post("/", createLink);
 
-// GET /api/links (list all links)
+// GET /api/links
 router.get("/", listLinks);
 
 // GET /api/links/:code
