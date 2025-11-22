@@ -3,16 +3,21 @@ const { createShortLink } = require("../services/linkService");
 
 const createLink = async (req, res) => {
   try {
-    // Validate input
+    // Basic long_url validation
     const validationError = validateUrlInput(req);
     if (validationError) {
       return res.status(400).json({ error: validationError });
     }
 
-    const { long_url, custom_code } = req.body;
+    // Accept both formats (custom_code or customCode)
+    const { long_url, custom_code, customCode } = req.body;
+    const finalCode = custom_code || customCode || null;
+
+    // Build base URL (fix for undefined short_url issue)
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
 
     // Business logic
-    const result = await createShortLink(long_url, custom_code);
+    const result = await createShortLink(long_url, finalCode, baseUrl);
 
     if (result.error) {
       return res.status(result.status).json({ error: result.error });
