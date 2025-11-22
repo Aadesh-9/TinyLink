@@ -3,7 +3,8 @@ const db = require("./index");
 
 // Check if a short code exists
 const checkCodeExists = async (code) => {
-  const q = "SELECT id FROM urls WHERE id = $1 AND is_deleted = FALSE";
+  const q = "SELECT id, is_deleted FROM urls WHERE id = $1";
+
   const result = await db.query(q, [code]);
   return result.rows.length > 0;
 };

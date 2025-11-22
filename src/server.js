@@ -7,9 +7,15 @@ const deleteRoutes = require("./routes/delete");
 
 const app = express();
 
-// Parse JSON and enable CORS
-app.use(express.static("public"));
+app.use(
+  express.static("public", {
+    etag: false,
+    lastModified: false,
+    maxAge: 0,
+  })
+);
 
+// Parse JSON and enable CORS
 app.use(express.json());
 app.use(cors());
 
@@ -35,9 +41,5 @@ const startServer = async () => {
     console.log(`Server running on port ${PORT}`);
   });
 };
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 
 startServer();

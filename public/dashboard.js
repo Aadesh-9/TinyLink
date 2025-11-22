@@ -56,7 +56,7 @@ async function loadLinks() {
   renderTable(allActiveLinks);
 }
 
-// Render rows (modular)
+// Render rows
 function renderTable(list) {
   const table = document.getElementById("linksTable");
   table.innerHTML = "";
@@ -97,3 +97,72 @@ async function deleteLink(code) {
 function openStats(code) {
   window.location.href = `/code.html?code=${code}`;
 }
+
+// Handle create link form
+document.getElementById("createForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const long_url = document.getElementById("longUrl").value;
+  const custom_code = document.getElementById("customCode").value.trim();
+  const formMessage = document.getElementById("formMessage");
+
+  // loading UI
+  formMessage.className =
+    "mt-4 p-3 rounded text-sm font-medium bg-blue-600/20 text-blue-300 animate-pulse";
+  formMessage.innerHTML = "⏳ Creating your short link...";
+
+  const body = custom_code ? { long_url, custom_code } : { long_url };
+
+  try {
+    const res = await fetch(API_BASE, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+
+    // error UI
+    if (!res.ok) {
+      formMessage.className =
+        "mt-4 p-3 rounded text-sm font-medium bg-red-600/20 text-red-300";
+      formMessage.textContent = data.error || "Something went wrong ❌";
+      return;
+    }
+
+    // SUCCESS UI
+    formMessage.className =
+      "mt-4 p-3 rounded text-sm font-medium bg-green-600/20 text-green-300";
+
+    formMessage.innerHTML = `
+      🎉 Short link created! <br>
+      <a href="${data.short_url}" target="_blank"
+         class="text-green-400 underline font-semibold">
+        ${data.short_url}
+      </a>
+
+      <button id="copyBtn"
+        class="ml-3 px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs">
+        Copy
+      </button>
+    `;
+
+    // Copy functionality
+    document.getElementById("copyBtn").onclick = () => {
+      navigator.clipboard.writeText(data.short_url);
+      formMessage.innerHTML +=
+        '<span class="ml-2 text-green-400">✔ Copied!</span>';
+    };
+
+    // reload list
+    loadLinks();
+
+    // clear form
+    document.getElementById("longUrl").value = "";
+    document.getElementById("customCode").value = "";
+  } catch (err) {
+    formMessage.className =
+      "mt-4 p-3 rounded text-sm font-medium bg-red-600/20 text-red-300";
+    formMessage.textContent = "Network error ❌";
+  }
+});
