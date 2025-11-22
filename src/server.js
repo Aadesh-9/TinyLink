@@ -1,7 +1,7 @@
-// Basic Express server
 const express = require("express");
 const cors = require("cors");
-const { connectDB } = require("./db/index");
+const linkRoutes = require("./routes/links");
+const migrate = require("./db/migrate");
 
 const app = express();
 
@@ -9,14 +9,17 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Simple health check route
+// Routes
+app.use("/api/links", linkRoutes);
+
+// Health check
 app.get("/healthz", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// Start the server
+// Start server
 const startServer = async () => {
-  await connectDB();
+  await migrate(); // auto-create tables
   app.listen(3000, () => {
     console.log("Server running on port 3000");
   });

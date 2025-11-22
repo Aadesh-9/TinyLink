@@ -1,20 +1,13 @@
-// Simple Postgres client setup
-const { Client } = require("pg");
+const { Pool } = require("pg");
 require("dotenv").config();
 
-// Create a client using the DATABASE_URL
-const client = new Client({
+// Use connection pool (recommended for Neon)
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
 });
 
-async function connectDB() {
-  try {
-    await client.connect();
-    console.log("Connected to Postgres");
-  } catch (err) {
-    console.error("Postgres connection error:", err);
-    process.exit(1);
-  }
-}
+// Simple query helper
+const query = (text, params) => pool.query(text, params);
 
-module.exports = { client, connectDB };
+module.exports = { query };

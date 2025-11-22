@@ -1,8 +1,8 @@
-CREATE TABLE urls (
-    id           VARCHAR(8) PRIMARY KEY,   
-    long_url     TEXT NOT NULL,            
-    total_clicks INTEGER DEFAULT 0,       
-    last_clicked TIMESTAMP,         
-    is_deleted   BOOLEAN DEFAULT FALSE,    
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS urls (
+  id VARCHAR(8) PRIMARY KEY,
+  long_url TEXT NOT NULL,
+  total_clicks INTEGER DEFAULT 0,
+  last_clicked TIMESTAMP,
+  is_deleted BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
